@@ -11,7 +11,7 @@
 #include "queue.h"
 
 
-void q_add(QUEUE **ref, const char *s)
+void q_add(const QUEUE **ref, const char *s)
 {
     queue->host = strdup(s);
     if (!queue->host)
@@ -36,7 +36,7 @@ void q_destroy(QUEUE *q)
     }
 }
 
-void q_loop(QUEUE *q)
+void q_loop(const QUEUE *q)
 {
     if (!q)
         return;

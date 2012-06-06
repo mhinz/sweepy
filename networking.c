@@ -15,7 +15,7 @@
 #include "networking.h"
 
 
-static inline unsigned short cksum(unsigned short *addr, int len)
+static inline unsigned short cksum(const unsigned short *addr, int len)
 {
     long sum = 0;
 
@@ -32,7 +32,7 @@ static inline unsigned short cksum(unsigned short *addr, int len)
     return (unsigned short)sum;
 }
 
-void do_ping(char *target)
+void do_ping(const char *target)
 {
     unsigned char   *packet;
     unsigned char   *buf;
