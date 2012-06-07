@@ -96,13 +96,13 @@ void do_ping(const char *target)
     if (ret == -1)
         die('p', "setsockopt failed");
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; ++i) {
         sent = sendto(sock, packet, PACKETSIZE, 0, p->ai_addr, p->ai_addrlen);
         if (sent == -1)
             die('p', "sendto failed");
     }
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; ++i) {
         ret = recv(sock, packet, PACKETSIZE, 0);
         if (ret == -1)
             continue;
@@ -110,13 +110,13 @@ void do_ping(const char *target)
         icmphdr = (struct icmphdr *)(sizeof (struct iphdr) + packet);
 
         if (icmphdr->un.echo.id != pid) {
-            i++;
+            ++i;
             continue;
         }
 
         switch (icmphdr->type) {
             case ICMP_ECHOREPLY:
-                count++;
+                ++count;
                 break;
             case ICMP_DEST_UNREACH:
                 printf("%-14s unreachable\n", target);

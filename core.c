@@ -68,13 +68,13 @@ static void start_manager(void)
     pthread_t t[NUM_THREADS];
     int       ret;
 
-    for (int i = 0; i < NUM_THREADS; i++) {
+    for (int i = 0; i < NUM_THREADS; ++i) {
         ret = pthread_create(&t[i], NULL, worker, NULL);
         if (ret != 0)
             die('f', "pthread_create failed");
     }
 
-    for (int i = 0; i < NUM_THREADS; i++) {
+    for (int i = 0; i < NUM_THREADS; ++i) {
         ret = pthread_join(t[i], NULL);
         if (ret != 0)
             die('f', "pthread_join failed");
