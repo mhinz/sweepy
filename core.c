@@ -20,25 +20,25 @@ QUEUE *queue;
 static QUEUE *foo;
 static pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
 
+static void *worker();
+static void get_hostlist();
+static void start_manager(void);
 
-static void get_hostlist()
+
+int main(void)
 {
-    FILE *hostlist;
-    char host[50];
-    int  ret;
+    pid = getpid();
+    queue = malloc(sizeof (QUEUE));
+    if (!queue)
+        die('f', "malloc failed");
+    QUEUE *qptr = queue;
+    foo = queue;
 
-    hostlist = fopen("list", "r");
-    if (!hostlist)
-        die('p', "fopen");
+    get_hostlist();
+    start_manager();
+    q_destroy(qptr);
 
-    while (fgets(host, sizeof host, hostlist)) {
-        host[strlen(host)-1] = '\0';
-        q_add(&queue, host);
-    }
-
-    ret = fclose(hostlist);
-    if (ret != 0)
-        die('p', "fclose");
+    pthread_exit(NULL);
 }
 
 __attribute__((hot))
@@ -63,6 +63,26 @@ static void *worker()
     pthread_exit(NULL);
 }
 
+static void get_hostlist()
+{
+    FILE *hostlist;
+    char host[50];
+    int  ret;
+
+    hostlist = fopen("list", "r");
+    if (!hostlist)
+        die('p', "fopen");
+
+    while (fgets(host, sizeof host, hostlist)) {
+        host[strlen(host)-1] = '\0';
+        q_add(&queue, host);
+    }
+
+    ret = fclose(hostlist);
+    if (ret != 0)
+        die('p', "fclose");
+}
+
 static void start_manager(void)
 {
     pthread_t t[NUM_THREADS];
@@ -81,18 +101,3 @@ static void start_manager(void)
     }
 }
 
-int main(void)
-{
-    pid = getpid();
-    queue = malloc(sizeof (QUEUE));
-    if (!queue)
-        die('f', "malloc failed");
-    QUEUE *qptr = queue;
-    foo = queue;
-
-    get_hostlist();
-    start_manager();
-    q_destroy(qptr);
-
-    pthread_exit(NULL);
-}
